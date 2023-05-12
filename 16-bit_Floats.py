@@ -1,12 +1,15 @@
 import math as m
 class Float16:
     def __init__(self, decimal):
-        self.binary = self.convertDecimaltoBinary(decimal)
+        self.decimal = decimal
+        self.binary = self.__convertDecimaltoBinary(decimal)
+    #def __init__(self, binary):
+
     def getFloat(self):
         return str(self.binary).zfill(16)
-    def convertDecimaltoBinary(self, decimal):
+    def __convertDecimaltoBinary(self, decimal):
         if (decimal < 0):
-            sign = 1 * 10^15
+            sign = 1 * 10 ** 15
             decimal = decimal * -1
         else:
             sign = 0
@@ -34,13 +37,14 @@ class Float16:
             else:
                 binFraction = binFraction * 10
             power += 1
-            if (power > 10):
-                break
+            #if (power > 16):
+            #    break
         binFraction = binFraction / 10 ** power
         bin = binInteger + binFraction
         exponent = 0
         while (bin < 1 or bin > 2):
             if (bin == 0):
+                exponent = -15
                 break
             if (bin < 1):
                 bin = bin * 10 
@@ -48,7 +52,7 @@ class Float16:
             else:
                 bin = bin / 10
                 exponent += 1
-        exponent += 15
+        exponent += 15  
         power = -1
         binExponent = 0
         while (exponent > 0):
@@ -61,14 +65,15 @@ class Float16:
             power += 1
         binExponent = binExponent * 10 ** power
         binExponent = m.ceil(binExponent)
-        bin -= 1
+        if (exponent != 0):
+            bin -= 1
+        else:
+            bin = bin / 10
         bin = round(bin, 10)
         bin = bin * 10 ** 10
-        bin = m.ceil(bin)
-        bin = bin // 1
         bin = m.ceil(bin)
         binExponent = binExponent * 10 ** 10
         return sign + binExponent + bin
     
-x = Float16(11)
+x = Float16(0.00003052)
 print(x.getFloat())
